@@ -23,6 +23,22 @@
 FILE *fp; 
 
 void setuppwm(){
+	//set up port
+	if ((fp = fopen("/sys/kernel/debug/omap_mux/gpmc_a2", "rb+")) == NULL)
+	{
+		printf("Cannot open mux file.\n");
+		exit(1);
+	}
+	//Set pointer to begining of the file
+	rewind(fp);
+	//Write our value of "out" to the file
+	char set_value[5];
+	strcpy(set_value,"6");
+	fwrite(&set_value, sizeof(char), 3, fp);
+	fclose(fp);
+	printf("...mux set\n");	
+
+
 	//set up period
 	if ((fp = fopen("/sys/class/pwm/ehrpwm.1\:0/period_freq", "rb+")) == NULL)
 	{
@@ -32,7 +48,6 @@ void setuppwm(){
 	//Set pointer to begining of the file
 	rewind(fp);
 	//Write our value of "out" to the file
-	char set_value[5];
 	strcpy(set_value,"10");
 	fwrite(&set_value, sizeof(char), 3, fp);
 	fclose(fp);
