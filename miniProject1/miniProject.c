@@ -22,6 +22,72 @@
 
 FILE *fp; 
 
+void setuppwm(){
+	//set up period
+	if ((fp = fopen("/sys/class/pwm/ehrpwm.1\:0/period_freq", "rb+")) == NULL)
+	{
+		printf("Cannot open period file.\n");
+		exit(1);
+	}
+	//Set pointer to begining of the file
+	rewind(fp);
+	//Write our value of "out" to the file
+	char set_value[5];
+	strcpy(set_value,"10");
+	fwrite(&set_value, sizeof(char), 3, fp);
+	fclose(fp);
+	printf("...period freq set\n");	
+		
+	//set up duty percent
+	if ((fp = fopen("/sys/class/pwm/ehrpwm.1\:0/duty_percent", "rb+")) == NULL)
+	{
+		printf("Cannot open duty percent file.\n");
+		exit(1);
+	}
+	//Set pointer to begining of the file
+	rewind(fp);
+	//Write our value of "out" to the file
+	strcpy(set_value,"25");
+	fwrite(&set_value, sizeof(char), 3, fp);
+	fclose(fp);
+	printf("...duty percent set\n");	
+}
+
+void runpwm(){
+	//on run
+	if ((fp = fopen("/sys/class/pwm/ehrpwm.1\:0/run", "rb+")) == NULL)
+	{
+		printf("Cannot open runfile.\n");
+		exit(1);
+	}
+	//Set pointer to begining of the file
+	rewind(fp);
+	//Write our value of "out" to the file
+	char set_value[5];
+	strcpy(set_value,"1");
+	fwrite(&set_value, sizeof(char), 3, fp);
+	fclose(fp);
+	//printf("...run on\n");	
+	
+	usleep(500000);
+
+	//off run
+	if ((fp = fopen("/sys/class/pwm/ehrpwm.1\:0/run", "rb+")) == NULL)
+	{
+		printf("Cannot open runfile.\n");
+		exit(1);
+	}
+	//Set pointer to begining of the file
+	rewind(fp);
+	//Write our value of "out" to the file
+	strcpy(set_value,"0");
+	fwrite(&set_value, sizeof(char), 3, fp);
+	fclose(fp);
+	//printf("...run off\n");
+	
+	
+}
+
 
 void exportgpio(int port){
 	//Using sysfs we need to write the 3 digit gpio number to /sys/class/gpio/export
@@ -238,6 +304,9 @@ int main(int argc, char** argv)
 	setdirectionout(LED5,0);
 	setdirectionout(Switch,1);
 
+	//set up pwn
+	setuppwm();
+	
 	//Run an infinite loop - will require Ctrl-C to exit this program
 	while(1)
 	{
@@ -262,6 +331,7 @@ int main(int argc, char** argv)
 	}
 	
 	if(gioRead(Switch) != 1){
+		runpwm();
 		readi2cTemp();
 	}
 
