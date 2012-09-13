@@ -1,23 +1,17 @@
-// An awesome led display show
-//
-//Created by Dingo_aus, 7 January 2009
-//email: dingo_aus [at] internode <dot> on /dot/ net
-// From http://www.avrfreaks.net/wiki/index.php/Documentation:Linux/GPIO#gpio_framework
-//
-//Created in AVR32 Studio (version 2.0.2) running on Ubuntu 8.04
-// Modified by Mark A. Yoder, 21-July-2011
 
-//Exstensively rewitten by Kevin Geisler, 8-Sept-2012
+/**************************************
+Example Program for the Large Piezo Vibration Sensor - With Mass
 
+This will display the value of the AIN0 Pin directly to the terminal repeatively.
+
+wrtten by Kevin Geisler, 23-Sept-2012
+***************************************/
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <linux/i2c-dev-user.h>
 #include <fcntl.h>
-#include <errno.h>
 
-#define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define SYSFS_AIN1_DIR "/sys/devices/platform/omap/tsc/ain2"
 
 FILE *fp; 
@@ -41,6 +35,7 @@ int readanalog(){
 //	printf(inString);
 	return atoi(&inString);
 }
+
 
 int main(int argc, char** argv)
 {
